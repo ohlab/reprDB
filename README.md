@@ -27,51 +27,38 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
 
 1: PATRIC .txt file (archaea, bacteria)
 
-* Go to the following website: https://www.patricbrc.org/portal/portal/patric/Home [1]
-	
+* Go [here](https://www.patricbrc.org/portal/portal/patric/Home) [1]
 * Organisms > All Bacteria OR All Archaea > Genome List
-	
 * Use the filters on the left to select the desired species
-	
 * Top middle: Download > Text File (.txt)
 	
 2: NCBI .nbr file (viruses)
 
-	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/viruses/ [2]
-	
-	Download Viral Genomes > Accession list of all viral genomes
+* Go [here](http://www.ncbi.nlm.nih.gov/genome/viruses/) [2]
+* Download Viral Genomes > Accession list of all viral genomes
 	
 3: List of GenBank accessions
 
-	Custom by the user
-	
-	Must have only one column, containing only GenBank accessions
-	
-	GenBank accessions must be one per line or separated by commas (no space)
-	
-	All genomes fetched for accession on the SAME line will be concatenated into one genome file; the script assumes all sequences belong to the organism specified by the first accession in the comma-delimited list
-	
-	Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
+* Custom by the user
+* Must have only one column, containing only GenBank accessions
+* GenBank accessions must be one per line or separated by commas (no space)
+* All genomes fetched for accession on the SAME line will be concatenated into one genome file; the script assumes all sequences belong to the organism specified by the first accession in the comma-delimited list
+* Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
 
 ###VERSION 2 
 
 1: NCBI .txt file
 
-	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/browse/
-	
-	Filter target list to desired scope
-	
-	Top right: Download selected records > Tab-delimited (.txt)
+* Go [here](ttp://www.ncbi.nlm.nih.gov/genome/browse/)
+* Filter target list to desired scope
+* Top right: Download selected records > Tab-delimited (.txt)
 	
 2: List of organism names
 
-	Custom by the user
-	
-	Must have only one column, containing only complete strings of organism names
-	
-	Must have only one organism per line
-	
-	Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
+* Custom by the user
+* Must have only one column, containing only complete strings of organism names
+* Must have only one organism per line
+* Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
 
 ##TO RUN
 
