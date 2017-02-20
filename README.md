@@ -1,26 +1,19 @@
-# Nicole Gay 
-# SSP 2016
-# 12 August 2016
-# READ_ME file for package "genome_db"
+This package is intended for the download and compilation of whole-genome microbial databases via the cluster.\n
+Genomes may be specified by GenBank accession or organism name. However, GenBank accession is preferred whenever possible.\n
 
-This package is intended for the download and compilation of whole-genome microbial databases via the cluster. 
-Genomes may be specified by GenBank accession or organism name. However, GenBank accession is preferred whenever possible. 
-
------------------------------------------------------------------------------------------------------
 CONTENTS (required in present working directory for operation)
 -----------------------------------------------------------------------------------------------------
 
->RUN 1 (download of individual, custom-formatted genome files)
-1. retrieve_V1.sh OR retrieve_V2.sh
-2. mass_retrieve_V1.qsub OR mass_retrieve_V2.qsub
-3. splitJobs.py
-4. Organism spec file, supplied by the user (see options below)
+>RUN 1 (download of individual, custom-formatted genome files)\n
+1. retrieve_V1.sh OR retrieve_V2.sh\n
+2. mass_retrieve_V1.qsub OR mass_retrieve_V2.qsub\n
+3. splitJobs.py\n
+4. Organism spec file, supplied by the user (see options below)\n
 
 >RUN 2 (concatention of sequence files and clean-up of directory)
 1. Outputs of RUN 1 (FASTA files, all all_lengths_*.txt files)
 2. format.sh
 
------------------------------------------------------------------------------------------------------
 INPUT FILE OPTIONS (and download instructions)
 -----------------------------------------------------------------------------------------------------
 
