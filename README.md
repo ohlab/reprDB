@@ -27,7 +27,7 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
 
 1: PATRIC .txt file (archaea, bacteria)
 
-	Go to the following website: [https://www.patricbrc.org/portal/portal/patric/Home](https://www.patricbrc.org/portal/portal/patric/Home) [1]
+	Go to the following website: https://www.patricbrc.org/portal/portal/patric/Home [1]
 	
 	Organisms > All Bacteria OR All Archaea > Genome List
 	
@@ -37,7 +37,7 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
 	
 2: NCBI .nbr file (viruses)
 
-	Go to the following website: [http://www.ncbi.nlm.nih.gov/genome/viruses/](http://www.ncbi.nlm.nih.gov/genome/viruses/) [2]
+	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/viruses/ [2]
 	
 	Download Viral Genomes > Accession list of all viral genomes
 	
@@ -57,7 +57,7 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
 
 1: NCBI .txt file
 
-	Go to the following website: [http://www.ncbi.nlm.nih.gov/genome/browse/](http://www.ncbi.nlm.nih.gov/genome/browse/)
+	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/browse/
 	
 	Filter target list to desired scope
 	
