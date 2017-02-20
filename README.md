@@ -5,7 +5,6 @@ CONTENTS (required in present working directory for operation)
 -----------------------------------------------------------------------------------------------------
 
 >RUN 1 (download of individual, custom-formatted genome files)
-
 1. retrieve_V1.sh OR retrieve_V2.sh
 
 2. mass_retrieve_V1.qsub OR mass_retrieve_V2.qsub
@@ -35,8 +34,11 @@ INPUT FILE OPTIONS (and download instructions)
 	Top middle: Download > Text File (.txt)
 	
 2. NCBI .nbr file (viruses)
+
 	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/viruses/ [2]
+	
 	Download Viral Genomes > Accession list of all viral genomes
+	
 3. List of GenBank accessions
 	Custom by the user
 	Must have only one column, containing only GenBank accessions
