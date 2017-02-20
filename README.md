@@ -27,13 +27,13 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
 
 1: PATRIC .txt file (archaea, bacteria)
 
-	Go to the following website: https://www.patricbrc.org/portal/portal/patric/Home [1]
+* Go to the following website: https://www.patricbrc.org/portal/portal/patric/Home [1]
 	
-	Organisms > All Bacteria OR All Archaea > Genome List
+* Organisms > All Bacteria OR All Archaea > Genome List
 	
-	Use the filters on the left to select the desired species
+* Use the filters on the left to select the desired species
 	
-	Top middle: Download > Text File (.txt)
+* Top middle: Download > Text File (.txt)
 	
 2: NCBI .nbr file (viruses)
 
