@@ -98,12 +98,14 @@ OUTPUTS
 >RUN 1
 
 1: One FASTA file (genome nucleotide sequence file) for each organism fetched, including custom taxonomic lineage headers
-FORMAT:
->ACCN:<GenBank accession>|Lineage_string;no_spaces;ends_with_species
+	
+	FORMAT:
+	>ACCN:<GenBank accession>|Lineage_string;no_spaces;ends_with_species
 
 2: One all_lengths_*.txt file for each job generated
-EXAMPLE:
->ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708	5486745
+	
+	EXAMPLE:
+	>ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708	5486745
 
 3: One failed_downloads_*.txt error log for each job generated
 
@@ -121,21 +123,21 @@ Essentially, you need to install edirect to your home directory and add an envir
 
 1: Install edirect to your home directory by copying and pasting the following lines into the command prompt after logging into the cluster (taken from http://www.ncbi.nlm.nih.gov/books/NBK179288/): You may need to hit ENTER one or more times to run every line:
 
-  cd ~
+	cd ~
   
-  perl -MNet::FTP -e \
+	perl -MNet::FTP -e \
   
-    '$ftp = new Net::FTP("ftp.ncbi.nlm.nih.gov", Passive => 1); $ftp->login;
+    		'$ftp = new Net::FTP("ftp.ncbi.nlm.nih.gov", Passive => 1); $ftp->login;
     
-     $ftp->binary; $ftp->get("/entrez/entrezdirect/edirect.zip");'
+     		$ftp->binary; $ftp->get("/entrez/entrezdirect/edirect.zip");'
      
-  unzip -u -q edirect.zip
+  	unzip -u -q edirect.zip
   
-  rm edirect.zip
+  	rm edirect.zip
   
-  export PATH=$PATH:$HOME/edirect
+  	export PATH=$PATH:$HOME/edirect
   
-  ./edirect/setup.sh
+  	./edirect/setup.sh
 
 2: Enter “nano ~/.bashrc” at the command prompt
 
@@ -154,15 +156,15 @@ pwd: outputs the current path (present working directory)
 
 cd /$FOLDER_NAME/$SUBFOLDER: allows you to navigate to the indicated path (i.e. folder)
 
-   e.g. 	cd /data/user-name
+  	e.g. 	cd /data/user-name
    
-   e.g.		cd /.. (brings you one level up to the parent directory)
+  	e.g.	cd /.. (brings you one level up to the parent directory)
    
 ls: lists everything within that directory
 
-   e.g. 	ls (output: all files and folders in the current directory)
+ 	e.g. 	ls (output: all files and folders in the current directory)
    
-   e.g.		ls /data/s-gayn/database (output: all files in the "database" folder)
+ 	e.g.	ls /data/s-gayn/database (output: all files in the "database" folder)
    
 cat $FILE_NAME: outputs the content of $FILE_NAME
 
