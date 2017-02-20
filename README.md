@@ -5,25 +5,25 @@ CONTENTS (required in present working directory for operation)
 -----------------------------------------------------------------------------------------------------
 
 >RUN 1 (download of individual, custom-formatted genome files)
-1. retrieve_V1.sh OR retrieve_V2.sh
+1: retrieve_V1.sh OR retrieve_V2.sh
 
-2. mass_retrieve_V1.qsub OR mass_retrieve_V2.qsub
+2: mass_retrieve_V1.qsub OR mass_retrieve_V2.qsub
 
-3. splitJobs.py
+3: splitJobs.py
 
-4. Organism spec file, supplied by the user (see options below)
+4: Organism spec file, supplied by the user (see options below)
 
 >RUN 2 (concatention of sequence files and clean-up of directory)
 
-1. Outputs of RUN 1 (FASTA files, all all_lengths_*.txt files)
+1: Outputs of RUN 1 (FASTA files, all all_lengths_*.txt files)
 
-2. format.sh
+2: format.sh
 
 INPUT FILE OPTIONS (and download instructions)
 -----------------------------------------------------------------------------------------------------
 
 >VERSION 1 (by GenBank accession; preferred method)
-1. PATRIC .txt file (archaea, bacteria)
+1: PATRIC .txt file (archaea, bacteria)
 
 	Go to the following website: https://www.patricbrc.org/portal/portal/patric/Home [1]
 	
@@ -33,13 +33,13 @@ INPUT FILE OPTIONS (and download instructions)
 	
 	Top middle: Download > Text File (.txt)
 	
-2. NCBI .nbr file (viruses)
+2: NCBI .nbr file (viruses)
 
 	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/viruses/ [2]
 	
 	Download Viral Genomes > Accession list of all viral genomes
 	
-3. List of GenBank accessions
+3: List of GenBank accessions
 
 	Custom by the user
 	
@@ -52,7 +52,7 @@ INPUT FILE OPTIONS (and download instructions)
 	Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
 
 >VERSION 2 
-1. NCBI .txt file
+1: NCBI .txt file
 
 	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/browse/
 	
@@ -60,7 +60,7 @@ INPUT FILE OPTIONS (and download instructions)
 	
 	Top right: Download selected records > Tab-delimited (.txt
 	
-2. List of organism names
+2: List of organism names
 
 	Custom by the user
 	
@@ -75,42 +75,40 @@ TO RUN
 
 If this is your first use, please see “NCBI Edirect” below first. Then…
 
-1. Copy/move all required files to a unique folder with no other contents
+1: Copy/move all required files to a unique folder with no other contents
 
 	NOTE: It is not enough to have the package folder located in this folder; individual files must be extracted
 	
-2. Within UNIX, navigate to this unique folder (UNIX novices see below)
+2: Within UNIX, navigate to this unique folder (UNIX novices see below)
 
-3. Type "sh mass_retrieve_V1.sh" (by GenBank accession) or "sh mass_retreive_V2.sh" (by organism name) at the command prompt
+3: Type "sh mass_retrieve_V1.sh" (by GenBank accession) or "sh mass_retreive_V2.sh" (by organism name) at the command prompt
 
-4. Follow the prompts output by the script
+4: Follow the prompts output by the script
 
-5. Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
+5: Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
 
-6. Make sure format.sh is in the current working directory and enter "sh format.sh" at the command prompt
+6: Make sure format.sh is in the current working directory and enter "sh format.sh" at the command prompt
 
 OUTPUTS
 -----------------------------------------------------------------------------------------------------
 
 >RUN 1
 
-1. One FASTA file (genome nucleotide sequence file) for each organism fetched, including custom taxonomic lineage headers
+1: One FASTA file (genome nucleotide sequence file) for each organism fetched, including custom taxonomic lineage headers
 FORMAT:
 >ACCN:<GenBank accession>|Lineage_string;no_spaces;ends_with_species
-<base sequence contained on a single line with contigs and strains concatenated with a series of 200 "N"s between them>
 
-2. One all_lengths_*.txt file for each job generated
+2: One all_lengths_*.txt file for each job generated
 EXAMPLE:
-Accession	Genome_Length
 >ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708	5486745
 
-3. One failed_downloads_*.txt error log for each job generated
+3: One failed_downloads_*.txt error log for each job generated
 
 >RUN 2 
 
-1. Files (.fa) of concatenated FASTA files, each <= 2.8 GB (change default max size within format.sh)
+1: Files (.fa) of concatenated FASTA files, each <= 2.8 GB (change default max size within format.sh)
 
-2. Concatenated all_lengths.txt file
+2: Concatenated all_lengths.txt file
 
 NCBI EDirect [3]
 -----------------------------------------------------------------------------------------------------
@@ -118,8 +116,7 @@ NCBI EDirect [3]
 If this is your first time using this script, you will need to do some setup in regards to direct.
 Essentially, you need to install edirect to your home directory and add an environmental variable to .bashrc.
 
-1. Install edirect to your home directory by copying and pasting the following lines into the command prompt after logging into the cluster:
-You may need to hit ENTER one or more times to run every line:
+1: Install edirect to your home directory by copying and pasting the following lines into the command prompt after logging into the cluster (taken from http://www.ncbi.nlm.nih.gov/books/NBK179288/): You may need to hit ENTER one or more times to run every line:
 
   cd ~
   
@@ -136,14 +133,12 @@ You may need to hit ENTER one or more times to run every line:
   export PATH=$PATH:$HOME/edirect
   
   ./edirect/setup.sh
-  
-(Taken from http://www.ncbi.nlm.nih.gov/books/NBK179288/)
 
-2. Enter “nano ~/.bashrc” at the command prompt
+2: Enter “nano ~/.bashrc” at the command prompt
 
-3. Add the following line at the end of the document: “export PATH=$PATH:/home/$YOUR_USER_NAME/edirect”
+3: Add the following line at the end of the document: “export PATH=$PATH:/home/$YOUR_USER_NAME/edirect”
 
-4. Enter “Ctrl + O”, “ENTER”, “Ctrl + X” (save and exit)
+4: Enter “Ctrl + O”, “ENTER”, “Ctrl + X” (save and exit)
 
 Now the scripts should work, as long as the line “#PBS -V” is at the top of all sub files. This exports environmental variables. 
 
@@ -175,7 +170,6 @@ mv $FILE $FOLDER/$NEW_LOCATION: moves $FILE in the current working directory to 
 cp $FILE $FOLDER/NEW_LOCATION: copies $FILE in the current working directory to the path provided ($FOLDER/$NEW_LOCATION)
 	
 These basic commands provide everything you need to know and more in able to use this database compilation package. 
-
 Happy compiling!
 
 SOURCES
