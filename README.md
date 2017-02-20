@@ -61,7 +61,7 @@ INPUT FILE OPTIONS (and download instructions)
 	
 	Filter target list to desired scope
 	
-	Top right: Download selected records > Tab-delimited (.txt
+	Top right: Download selected records > Tab-delimited (.txt)
 	
 2: List of organism names
 
