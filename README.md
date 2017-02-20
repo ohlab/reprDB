@@ -49,7 +49,7 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
 
 1: NCBI .txt file
 
-* Go [here](ttp://www.ncbi.nlm.nih.gov/genome/browse/)
+* Go [here](http://www.ncbi.nlm.nih.gov/genome/browse/)
 * Filter target list to desired scope
 * Top right: Download selected records > Tab-delimited (.txt)
 	
