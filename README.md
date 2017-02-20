@@ -40,37 +40,55 @@ INPUT FILE OPTIONS (and download instructions)
 	Download Viral Genomes > Accession list of all viral genomes
 	
 3. List of GenBank accessions
+
 	Custom by the user
+	
 	Must have only one column, containing only GenBank accessions
+	
 	GenBank accessions must be one per line or separated by commas (no space)
+	
 	All genomes fetched for accession on the SAME line will be concatenated into one genome file; the script assumes all sequences belong to the organism specified by the first accession in the comma-delimited list
-Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
+	
+	Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
 
 >VERSION 2 
 1. NCBI .txt file
-	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/browse/
-	Filter target list to desired scope
-	Top right: Download selected records > Tab-delimited (.txt
-2. List of organism names
-	Custom by the user
-	Must have only one column, containing only complete strings of organism names
-	Must have only one organism per line
-Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
 
------------------------------------------------------------------------------------------------------
+	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/browse/
+	
+	Filter target list to desired scope
+	
+	Top right: Download selected records > Tab-delimited (.txt
+	
+2. List of organism names
+
+	Custom by the user
+	
+	Must have only one column, containing only complete strings of organism names
+	
+	Must have only one organism per line
+	
+	Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
+
 TO RUN
 -----------------------------------------------------------------------------------------------------
 
 If this is your first use, please see “NCBI Edirect” below first. Then…
+
 1. Copy/move all required files to a unique folder with no other contents
+
 	NOTE: It is not enough to have the package folder located in this folder; individual files must be extracted
+	
 2. Within UNIX, navigate to this unique folder (UNIX novices see below)
+
 3. Type "sh mass_retrieve_V1.sh" (by GenBank accession) or "sh mass_retreive_V2.sh" (by organism name) at the command prompt
+
 4. Follow the prompts output by the script
+
 5. Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
+
 6. Make sure format.sh is in the current working directory and enter "sh format.sh" at the command prompt
 
------------------------------------------------------------------------------------------------------
 OUTPUTS
 -----------------------------------------------------------------------------------------------------
 
@@ -84,18 +102,20 @@ OUTPUTS
 		CCGGGCGCGTCGCCCTCGACGGCCAGCAGTACCGCCACCCCGGTCGGCGCGCGGCGCAGCAGGGCCTCCAGCGCCCACCCGGCCGCCGTGGTGCCCTCGCCGCCCGGCAGGCGCGGCGCGAACCC...
 		>ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708
 		TAAAGTTTTGTAAAGAAGATAAAAGAAAAGAAAATTTAATGATTTAAAAATTAAATTAGAACAGAAGAAGAAATGATTGAATCACAACAGGAGTTGTGGATAATTCTTTTGTGAAATCAAAGCTT...
+
 2. One all_lengths_*.txt file for each job generated
 	EXAMPLE:
 		Accession	Genome_Length
 		>ACCN:CP011389|Bacteria;Deinococcus-Thermus;Deinococci;Deinococcales;Deinococcaceae;Deinococcus;Deinococcus_soli_Cha_et_al._2014	3237084
 		>ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708	5486745
+
 3. One failed_downloads_*.txt error log for each job generated
 
 >RUN 2 
 1. Files (.fa) of concatenated FASTA files, each <= 2.8 GB (change default max size within format.sh)
+
 2. Concatenated all_lengths.txt file
 
------------------------------------------------------------------------------------------------------
 NCBI EDirect [3]
 -----------------------------------------------------------------------------------------------------
 
@@ -117,12 +137,13 @@ You may need to hit ENTER one or more times to run every line:
 (Taken from http://www.ncbi.nlm.nih.gov/books/NBK179288/)
 
 2. Enter “nano ~/.bashrc” at the command prompt
+
 3. Add the following line at the end of the document: “export PATH=$PATH:/home/$YOUR_USER_NAME/edirect”
+
 4. Enter “Ctrl + O”, “ENTER”, “Ctrl + X” (save and exit)
 
 Now the scripts should work, as long as the line “#PBS -V” is at the top of all sub files. This exports environmental variables. 
 
------------------------------------------------------------------------------------------------------
 FOR UNIX NOVICES
 -----------------------------------------------------------------------------------------------------
 
@@ -150,7 +171,6 @@ cp $FILE $FOLDER/NEW_LOCATION
 These basic commands provide everything you need to know and more in able to use this database compilation package. 
 Happy compiling!
 
------------------------------------------------------------------------------------------------------
 SOURCES
 -----------------------------------------------------------------------------------------------------
 
