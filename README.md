@@ -93,25 +93,21 @@ OUTPUTS
 -----------------------------------------------------------------------------------------------------
 
 >RUN 1
+
 1. One FASTA file (genome nucleotide sequence file) for each organism fetched, including custom taxonomic lineage headers
-	FORMAT:
-		>ACCN:<GenBank accession>|Lineage_string;no_spaces;ends_with_species
-		<base sequence contained on a single line with contigs and strains concatenated with a series of 200 "N"s between them>
-	EXAMPLE:
-		>ACCN:CP011389|Bacteria;Deinococcus-Thermus;Deinococci;Deinococcales;Deinococcaceae;Deinococcus;Deinococcus_soli_Cha_et_al._2014
-		CCGGGCGCGTCGCCCTCGACGGCCAGCAGTACCGCCACCCCGGTCGGCGCGCGGCGCAGCAGGGCCTCCAGCGCCCACCCGGCCGCCGTGGTGCCCTCGCCGCCCGGCAGGCGCGGCGCGAACCC...
-		>ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708
-		TAAAGTTTTGTAAAGAAGATAAAAGAAAAGAAAATTTAATGATTTAAAAATTAAATTAGAACAGAAGAAGAAATGATTGAATCACAACAGGAGTTGTGGATAATTCTTTTGTGAAATCAAAGCTT...
+FORMAT:
+>ACCN:<GenBank accession>|Lineage_string;no_spaces;ends_with_species
+<base sequence contained on a single line with contigs and strains concatenated with a series of 200 "N"s between them>
 
 2. One all_lengths_*.txt file for each job generated
-	EXAMPLE:
-		Accession	Genome_Length
-		>ACCN:CP011389|Bacteria;Deinococcus-Thermus;Deinococci;Deinococcales;Deinococcaceae;Deinococcus;Deinococcus_soli_Cha_et_al._2014	3237084
-		>ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708	5486745
+EXAMPLE:
+Accession	Genome_Length
+>ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708	5486745
 
 3. One failed_downloads_*.txt error log for each job generated
 
 >RUN 2 
+
 1. Files (.fa) of concatenated FASTA files, each <= 2.8 GB (change default max size within format.sh)
 
 2. Concatenated all_lengths.txt file
@@ -126,12 +122,19 @@ Essentially, you need to install edirect to your home directory and add an envir
 You may need to hit ENTER one or more times to run every line:
 
   cd ~
+  
   perl -MNet::FTP -e \
+  
     '$ftp = new Net::FTP("ftp.ncbi.nlm.nih.gov", Passive => 1); $ftp->login;
+    
      $ftp->binary; $ftp->get("/entrez/entrezdirect/edirect.zip");'
+     
   unzip -u -q edirect.zip
+  
   rm edirect.zip
+  
   export PATH=$PATH:$HOME/edirect
+  
   ./edirect/setup.sh
   
 (Taken from http://www.ncbi.nlm.nih.gov/books/NBK179288/)
@@ -149,31 +152,37 @@ FOR UNIX NOVICES
 
 A quick tutorial on what you need to know about UNIX in order to run this script:
 
-pwd
-	outputs the current path (present working directory)
-cd /$FOLDER_NAME/$SUBFOLDER
-	allows you to navigate to the indicated path (i.e. folder)
-	e.g. 	cd /data/user-name
-	e.g.	cd /.. (brings you one level up to the parent directory)
-ls
-	lists everything within that directory
-	e.g. 	ls (output: all files and folders in the current directory)
-	e.g.	ls /data/s-gayn/database (output: all files in the "database" folder)
-cat $FILE_NAME
-	outputs the content of $FILE_NAME
-mv $FILE $NEW_NAME 
-	renames $FILE in the current working directory to $NEW_NAME
-mv $FILE $FOLDER/$NEW_LOCATION
-	moves $FILE in the current working directory to the path provided ($FOLDER/$NEW_LOCATION)
-cp $FILE $FOLDER/NEW_LOCATION
-	copies $FILE in the current working directory to the path provided ($FOLDER/$NEW_LOCATION)
+pwd: outputs the current path (present working directory)
+
+cd /$FOLDER_NAME/$SUBFOLDER: allows you to navigate to the indicated path (i.e. folder)
+
+   e.g. 	cd /data/user-name
+   
+   e.g.		cd /.. (brings you one level up to the parent directory)
+   
+ls: lists everything within that directory
+
+   e.g. 	ls (output: all files and folders in the current directory)
+   
+   e.g.		ls /data/s-gayn/database (output: all files in the "database" folder)
+   
+cat $FILE_NAME: outputs the content of $FILE_NAME
+
+mv $FILE $NEW_NAME: renames $FILE in the current working directory to $NEW_NAME
+
+mv $FILE $FOLDER/$NEW_LOCATION: moves $FILE in the current working directory to the path provided ($FOLDER/$NEW_LOCATION)
+
+cp $FILE $FOLDER/NEW_LOCATION: copies $FILE in the current working directory to the path provided ($FOLDER/$NEW_LOCATION)
 	
 These basic commands provide everything you need to know and more in able to use this database compilation package. 
+
 Happy compiling!
 
 SOURCES
 -----------------------------------------------------------------------------------------------------
 
-[1]	Wattam, A.R., D. Abraham, O. Dalay, T.L. Disz, T. Driscoll, J.L. Gabbard, J.J. Gillespie, R. Gough, D. Hix, R. Kenyon, D. Machi, C. Mao, E.K. Nordberg, R. Olson, R. 	Overbeek, G.D. Pusch, M. Shukla, J. Schulman, R.L. Stevens, D.E. Sullivan, V. Vonstein, A. Warren, R. Will, M.J.C. Wilson, H. Seung Yoo, C. Zhang, Y. Zhang, B.W. 		Sobral (2014). “PATRIC, the bacterial bioinformatics database and analysis resource.” Nucl Acids Res 42 (D1): D581-D591. doi:10.1093/nar/gkt1099. PMID: 24225323. 
+[1]	Wattam, A.R., D. Abraham, O. Dalay, T.L. Disz, T. Driscoll, J.L. Gabbard, J.J. Gillespie, R. Gough, D. Hix, R. Kenyon, D. Machi, C. Mao, E.K. Nordberg, R. Olson, R. 	Overbeek, G.D. Pusch, M. Shukla, J. Schulman, R.L. Stevens, D.E. Sullivan, V. Vonstein, A. Warren, R. Will, M.J.C. Wilson, H. Seung Yoo, C. Zhang, Y. Zhang, B.W. Sobral (2014). “PATRIC, the bacterial bioinformatics database and analysis resource.” Nucl Acids Res 42 (D1): D581-D591. doi:10.1093/nar/gkt1099. PMID: 24225323. 
+
 [2]	NCBI viral genomes resource. Brister JR, Ako-Adjei D, Bao Y, Blinkova O.Nucleic Acids Res. 2015 Jan;43(Database issue):D571-7. doi: 10.1093/nar/gku1207. Epub 2014 Nov 	26. 
-[3] 	Sayers E. E-utilities Quick Start. 2008 Dec 12 [Updated 2013 Aug 9]. In: Entrez Programming Utilities Help [Internet]. Bethesda (MD): National Center for 	Biotechnology Information (US); 2010-. Available from: http://www.ncbi.nlm.nih.gov/ books/NBK25500/
+
+[3] 	Sayers E. E-utilities Quick Start. 2008 Dec 12 [Updated 2013 Aug 9]. In: Entrez Programming Utilities Help [Internet]. Bethesda (MD): National Center for Biotechnology Information (US); 2010-. Available from: http://www.ncbi.nlm.nih.gov/ books/NBK25500/
