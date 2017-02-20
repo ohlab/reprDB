@@ -5,6 +5,7 @@ CONTENTS (required in present working directory for operation)
 -----------------------------------------------------------------------------------------------------
 
 >RUN 1 (download of individual, custom-formatted genome files)
+
 1: retrieve_V1.sh OR retrieve_V2.sh
 
 2: mass_retrieve_V1.qsub OR mass_retrieve_V2.qsub
@@ -23,6 +24,7 @@ INPUT FILE OPTIONS (and download instructions)
 -----------------------------------------------------------------------------------------------------
 
 >VERSION 1 (by GenBank accession; preferred method)
+
 1: PATRIC .txt file (archaea, bacteria)
 
 	Go to the following website: https://www.patricbrc.org/portal/portal/patric/Home [1]
@@ -52,6 +54,7 @@ INPUT FILE OPTIONS (and download instructions)
 	Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
 
 >VERSION 2 
+
 1: NCBI .txt file
 
 	Go to the following website: http://www.ncbi.nlm.nih.gov/genome/browse/
