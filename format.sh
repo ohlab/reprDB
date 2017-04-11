@@ -1,6 +1,22 @@
 #PBS -N format_db
 #PBS -l walltime=60:00:00,mem=8gb,nodes=1:ppn=16
 
+#   ReprDB compilation pipeline
+#   Copyright (C) 2017 Nicole Gay
+
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   any later version.
+
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 printf "\nThis script concatenates all FASTA files in _interim (a sub-folder in the pwd) into larger chunks and cleans up other outputs of retrieve.sh. Individual FASTA files are compressed once concatenated. You may delete them upon completion of this script.\n\n"
 
 printf "Would you like to continue? (Y/N): "
