@@ -64,6 +64,8 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
 
 If this is your first use, please see “NCBI Edirect” below first. Then…
 
+0: Run test.sh for a quick unit test, it uses two E.coli genomes and one Cowpox virus genome to check if the outputs of the download, formatting, job split and compilation steps are as expected. The result of the test is output to "test_result". Please make sure to run the test before compiling the full database to avoid overwriting.
+
 1: Copy/move all required files to a unique folder with no other contents
 
 	NOTE: It is not enough to have the package folder located in this folder; individual files must be extracted
