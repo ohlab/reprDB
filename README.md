@@ -68,7 +68,7 @@ If this is your first use, please see “NCBI Edirect” below first. Then…
 5. Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
 
 ### PART 2  
-6. Make sure `format.sh` is in the current working directory and run `bash format.sh`
+1. Make sure `format.sh` is in the current working directory and run `bash format.sh`
 
 ## OUTPUTS
 
