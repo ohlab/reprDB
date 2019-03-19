@@ -109,7 +109,7 @@ export PATH=$PATH:$HOME/edirect
 ```
 2. Add the following line to `nano ~/.bashrc`: `export PATH=$PATH:/home/$YOUR_USER_NAME/edirect`. Alternatively, enter `export PATH=$PATH:/home/$YOUR_USER_NAME/edirect` at the command line immediately before running these scripts.  
 
-Now the scripts should work, as long as the line “#PBS -V” is at the top of all sub files. This exports environmental variables. 
+Now the scripts should work, as long as the line `#PBS -V` is at the top of all sub files. This exports environmental variables. 
 
 ## FOR UNIX NOVICES
 
