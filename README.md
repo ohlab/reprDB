@@ -1,4 +1,4 @@
-# repDB
+# reprDB
 
 This package is intended for the download and compilation of whole-genome microbial databases via the cluster.
 Genomes may be specified by GenBank accession or organism name. However, GenBank accession is preferred whenever possible.
@@ -96,20 +96,28 @@ EXAMPLE:
 If this is your first time using this script, you will need to do some setup in regards to direct.
 Essentially, you need to install edirect to your home directory and add an environmental variable to .bashrc.
 
-1. Install edirect to your home directory by copying and pasting the following lines into the command prompt after logging into the cluster (taken from [here](http://www.ncbi.nlm.nih.gov/books/NBK179288/)). You may need to hit ENTER one or more times to run every line:
+1. Install `edirect` by following the instructions below, copied from here (taken from [here](http://www.ncbi.nlm.nih.gov/books/NBK179288/)). Note you must already have `perl` installed:
+
+*EDirect will run on UNIX and Macintosh computers that have the Perl language installed, and under the Cygwin UNIX-emulation environment on Windows PCs. To install the EDirect software, copy the following commands and paste them into a terminal window:*
+
 ```
 cd ~
+/bin/bash
 perl -MNet::FTP -e \
-	'$ftp = new Net::FTP("ftp.ncbi.nlm.nih.gov", Passive => 1); $ftp->login;
-	$ftp->binary; $ftp->get("/entrez/entrezdirect/edirect.zip");'
-unzip -u -q edirect.zip
-rm edirect.zip
-export PATH=$PATH:$HOME/edirect
+	'$ftp = new Net::FTP("ftp.ncbi.nlm.nih.gov", Passive => 1);
+	$ftp->login; $ftp->binary;
+	$ftp->get("/entrez/entrezdirect/edirect.tar.gz");'
+gunzip -c edirect.tar.gz | tar xf -
+rm edirect.tar.gz
+builtin exit
+export PATH=${PATH}:$HOME/edirect >& /dev/null || setenv PATH "${PATH}:$HOME/edirect"
 ./edirect/setup.sh
 ```
-2. Add the following line to `nano ~/.bashrc`: `export PATH=$PATH:/home/$YOUR_USER_NAME/edirect`. Alternatively, enter `export PATH=$PATH:/home/$YOUR_USER_NAME/edirect` at the command line immediately before running these scripts.  
-
-Now the scripts should work, as long as the line `#PBS -V` is at the top of all sub files. This exports environmental variables. 
+*This downloads several scripts into an "edirect" folder in the user's home directory. The setup.sh script then downloads any missing Perl modules, and may print an additional command for updating the PATH environment variable in the user's configuration file. Copy that command, if present, and paste it into the terminal window to complete the installation process. The editing instructions will look something like:*
+```
+echo "export PATH=\$PATH:\$HOME/edirect" >> $HOME/.bash_profile   
+```
+Now the scripts should work, as long as the line `#PBS -V` is at the top of all scripts called by `qsub`. This exports environmental variables. 
 
 ## FOR UNIX NOVICES
 
