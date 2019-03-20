@@ -29,9 +29,9 @@ echo "export PATH=\$PATH:\$HOME/edirect" >> $HOME/.bash_profile
 ```
 The line `#PBS -V` at the top of the scripts called by `qsub` exports environmental variables, including those in `.bash_profile`. 
 
-### 1.2 Request an API key from NBCI (optional)
+### 1.2 Request an API key from NBCI (HIGHLY RECOMMENDED)
 
-As of May 1, 2018, you must request an API key from NCBI in order to submit multiple EDirect requests within one second. These scripts add a 1-second pause after each EDirect command to try to avoid the `429 Too Many Requests PLEASE REQUEST AN API_KEY FROM NCBI` error. However, I have still gotten this error even with the `sleep` commands to avoid it. If this becomes problematic, follow the instructions here to allow for more requests from your IP address: https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
+As of May 1, 2018, you must request an API key from NCBI in order to submit multiple EDirect requests within one second. These scripts add a 5-second pause after each EDirect command to try to avoid the `429 Too Many Requests PLEASE REQUEST AN API_KEY FROM NCBI` error. However, I have still gotten this error even with the `sleep` commands to avoid it. I highly recommend obtaining an API key from NCBI before attempting to run these script. Follow the instructions here: https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
 
 ## 2. Prepare the input file that specifies the target genomes  
 
@@ -73,81 +73,75 @@ Scripts are supplied for two different input types: 1) GenBank accessions; 2) or
 
 ## 3. Prepare the output directory 
 
-1. Create a new folder (e.g. `ncbi`)
-2. From the command line, export a variable called `outdir` that is defined as the **full** path to the output folder, e.g.:
-```
-export outdir=/users/my_username/ncbi
-```
-3. Move the file generated in Step 2 to this folder. No other files should be present in this folder. 
+1. Create a new folder (e.g. `ncbi`). This path is referred to at `${outdir}`.
+2. Move the file generated in Step 2 to this folder. No other files should be present in this folder. 
 
 ## 4. Run the scripts
 
-### 4.1 Via the cluster (recommended)
+### 4.1 Via the cluster (recommended)  
 
-1. 
+#### 4.1.1. Version 1: GenBank accessions (preferred)
+
+1. Define a variable with the full path to the input file (generated in Step 2). Note that this file should be located in the desired output folder `${outdir}` (from Step 3).
+```
+infile=/users/my_sername/reprdb/taxid10239.nbr
+``` 
+2. Run `bash mass_retrieve_V1.sh ${infile}`
+3. Follow the prompts output by the script
+4. Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
+5. Run `bash format.sh ${infile}`
+6. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
+
+#### 4.1.2. Version 2: Organism name (suboptimal)
+
+1. Define a variable with the full path to the input file (generated in Step 2). Note that this file should be located in the desired output folder `${outdir}` (from Step 3).
+```
+infile=/users/my_sername/reprdb/names.txt
+``` 
+2. Run `bash mass_retrieve_V2.sh ${infile}`
+3. Follow the prompts output by the script
+4. Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
+5. Run `bash format.sh ${infile}`
+6. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
 
 ### 4.2 Locally (suboptimal)
 
+#### 4.2.1. Version 1: GenBank accessions (preferred)
 
-
-## CONTENTS (required in present working directory for operation)
-
-### PART 1 (download of individual, custom-formatted genome files)
-
-1. `retrieve_V1.sh` OR `retrieve_V2.sh`
-2. `mass_retrieve_V1.qsub` OR `mass_retrieve_V2.qsub`
-3. `splitJobs.py`
-4. Organism spec file, supplied by the user (see options below)
-
-### PART 2 (concatention of sequence files and clean-up of directory)
-
-1. Outputs of PART 1 (FASTA files; all `all_lengths_*.txt` files)
-2. `format.sh`
-
-
-
-## TO RUN
-
-If this is your first use, please see “NCBI Edirect” below first. Then…
-
-0. Run `test.sh` for a quick unit test. It uses two E.coli genomes and one Cowpox virus genome to check if the outputs of the download, formatting, job split, and compilation steps are as expected. The result of the test is output to `test_result`. Please make sure to run the test before compiling the full database to avoid overwriting.
-
-### PART 1  
-1. Copy/move all required files (see **CONTENTS**) to a new folder with no other files  
-**NOTE: It is not enough to have the repository folder located in this folder; individual files must be extracted**   
-2. Navigate to this new folder (UNIX novices see below)
-3. Run `bash mass_retrieve_V1.sh` (by GenBank accession) or `bash mass_retreive_V2.sh` (by organism name)
+1. Start a [`screen` session](https://ss64.com/osx/screen.html), which will not kill the script if your computer goes to sleep (e.g. `screen -S reprdb`)
+2. Define a variable with the full path to the input file (generated in Step 2). Note that this file should be located in the desired output folder `${outdir}` (from Step 3).
+```
+infile=/users/my_sername/reprdb/taxid10239.nbr
+``` 
+3. Run `bash local_retrieve_V1.sh ${infile}`
 4. Follow the prompts output by the script
-5. Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
+4. Detach from the screen while you wait for the script to finish running (`CTRL + A + D`)
+5. Reattach to the screen to check progress (e.g. `screen -r reprdb`)
+6. When the script has finished running, you may exit the screen session (type `exit` at the command line while attached to the screen)
+7. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
 
-### PART 2  
-1. Make sure `format.sh` is in the current working directory and run `bash format.sh`
+#### 4.2.2. Version 2: Organism name (suboptimal)
 
-## OUTPUTS
-
-### PART 1
-
-1. One FASTA file (genome nucleotide sequence file) for each organism fetched, including custom taxonomic lineage headers
+1. Start a [`screen` session](https://ss64.com/osx/screen.html), which will not kill the script if your computer goes to sleep (e.g. `screen -S reprdb`)
+2. Define a variable with the full path to the input file (generated in Step 2). Note that this file should be located in the desired output folder `${outdir}` (from Step 3).
 ```
-FORMAT:
->ACCN:<GenBank accession>|Lineage_string;no_spaces;ends_with_species
+infile=/users/my_sername/reprdb/names.txt
+``` 
+3. Run `bash local_retrieve_V2.sh ${infile}`
+4. Follow the prompts output by the script
+4. Detach from the screen while you wait for the script to finish running (`CTRL + A + D`)
+5. Reattach to the screen to check progress (e.g. `screen -r reprdb`)
+6. When the script has finished running, you may exit the screen session (type `exit` at the command line while attached to the screen)
+7. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
+
+## 5. Final outputs (found in `${outdir}/compiled_genomes`)
+
+1. Concatenated FASTA files (`.fa`), each <= 2.8 GB (change default max size within `format.sh`)
+2. An `all_lengths.txt` file with one line per genome. These lines provide the corresponding sequence name in the concatenated FASTA files and the length of the sequence, e.g.:
 ```
-2. One `all_lengths_*.txt` file for each job generated
-```
-EXAMPLE:
 >ACCN:CP002059|Bacteria;Cyanobacteria;Nostocales;Nostocaceae;Trichormus;Nostoc_azollae_0708	5486745
 ```
-3. One `failed_downloads_*.txt` error log for each job generated
-
-### PART 2 
-
-1. Files (.fa) of concatenated FASTA files, each <= 2.8 GB (change default max size within `format.sh`)
-2. Concatenated `all_lengths.txt` file
-
-
-
-
-
+3. A `failed_download.txt` with errors from all jobs 
 
 ## FOR UNIX NOVICES
 
