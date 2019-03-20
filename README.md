@@ -87,7 +87,7 @@ Scripts are supplied for two different input types: 1) GenBank accessions; 2) or
 infile=/users/my_sername/reprdb/taxid10239.nbr
 ``` 
 2. Run `bash mass_retrieve_V1.sh ${infile}`
-3. Follow the prompts output by the script
+3. Enter the input file type when prompted
 4. Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
 5. Run `bash format.sh ${infile}`
 6. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
@@ -99,7 +99,7 @@ infile=/users/my_sername/reprdb/taxid10239.nbr
 infile=/users/my_sername/reprdb/names.txt
 ``` 
 2. Run `bash mass_retrieve_V2.sh ${infile}`
-3. Follow the prompts output by the script
+3. Enter the input file type when prompted
 4. Wait for the genomes to finish downloading (this could take several hours depending on the number of genomes requested)
 5. Run `bash format.sh ${infile}`
 6. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
@@ -114,11 +114,11 @@ infile=/users/my_sername/reprdb/names.txt
 infile=/users/my_sername/reprdb/taxid10239.nbr
 ``` 
 3. Run `bash local_retrieve_V1.sh ${infile}`
-4. Follow the prompts output by the script
-4. Detach from the screen while you wait for the script to finish running (`CTRL + A + D`)
-5. Reattach to the screen to check progress (e.g. `screen -r reprdb`)
-6. When the script has finished running, you may exit the screen session (type `exit` at the command line while attached to the screen)
-7. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
+4. Enter the input file type when prompted
+5. Detach from the screen while you wait for the script to finish running (`CTRL + A + D`)
+6. Reattach to the screen to check progress (e.g. `screen -r reprdb`)
+7. When the script has finished running, you may exit the screen session (type `exit` at the command line while attached to the screen)
+8. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
 
 #### 4.2.2. Version 2: Organism name (suboptimal)
 
@@ -128,11 +128,11 @@ infile=/users/my_sername/reprdb/taxid10239.nbr
 infile=/users/my_sername/reprdb/names.txt
 ``` 
 3. Run `bash local_retrieve_V2.sh ${infile}`
-4. Follow the prompts output by the script
-4. Detach from the screen while you wait for the script to finish running (`CTRL + A + D`)
-5. Reattach to the screen to check progress (e.g. `screen -r reprdb`)
-6. When the script has finished running, you may exit the screen session (type `exit` at the command line while attached to the screen)
-7. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
+4. Enter the input file type when prompted
+5. Detach from the screen while you wait for the script to finish running (`CTRL + A + D`)
+6. Reattach to the screen to check progress (e.g. `screen -r reprdb`)
+7. When the script has finished running, you may exit the screen session (type `exit` at the command line while attached to the screen)
+8. Find your compiled sequence files and `all_lengths.txt` file in `${outdir}/compiled_genomes`
 
 ## 5. Final outputs (found in `${outdir}/compiled_genomes`)
 
