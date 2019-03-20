@@ -1,25 +1,43 @@
 # reprDB
 
-This package is intended for the download and compilation of whole-genome microbial databases via the cluster.
-Genomes may be specified by GenBank accession or organism name. However, GenBank accession is preferred whenever possible.
+This package is intended for the download and compilation of whole-genome microbial databases via a cluster. Genomes of interest may be specified by GenBank accession or organism name. However, GenBank accession is preferred whenever possible. Note that scripts are provided to run this process locally, but this is NOT recommended for any large number of genomes.
 
-## CONTENTS (required in present working directory for operation)
+## 1. Get EDirect set up
 
-### PART 1 (download of individual, custom-formatted genome files)
+### 1.1 Install the NCBI Entrez command line tool, [EDirect](https://www.ncbi.nlm.nih.gov/books/NBK179288/) [3]
 
-1. `retrieve_V1.sh` OR `retrieve_V2.sh`
-2. `mass_retrieve_V1.qsub` OR `mass_retrieve_V2.qsub`
-3. `splitJobs.py`
-4. Organism spec file, supplied by the user (see options below)
+If this is your first time using `EDirect`, you need to install the command line tool. `EDirect` is compatible with UNIX and Macintosh systems. Follow the installation instructions below, copied from [here](http://www.ncbi.nlm.nih.gov/books/NBK179288/)). Note you must already have `perl` installed:
 
-### PART 2 (concatention of sequence files and clean-up of directory)
+*EDirect will run on UNIX and Macintosh computers that have the Perl language installed, and under the Cygwin UNIX-emulation environment on Windows PCs. To install the EDirect software, copy the following commands and paste them into a terminal window:*
 
-1. Outputs of PART 1 (FASTA files; all `all_lengths_*.txt` files)
-2. `format.sh`
+```
+cd ~
+/bin/bash
+perl -MNet::FTP -e \
+	'$ftp = new Net::FTP("ftp.ncbi.nlm.nih.gov", Passive => 1);
+	$ftp->login; $ftp->binary;
+	$ftp->get("/entrez/entrezdirect/edirect.tar.gz");'
+gunzip -c edirect.tar.gz | tar xf -
+rm edirect.tar.gz
+builtin exit
+export PATH=${PATH}:$HOME/edirect >& /dev/null || setenv PATH "${PATH}:$HOME/edirect"
+./edirect/setup.sh
+```
+*This downloads several scripts into an "edirect" folder in the user's home directory. The setup.sh script then downloads any missing Perl modules, and may print an additional command for updating the PATH environment variable in the user's configuration file. Copy that command, if present, and paste it into the terminal window to complete the installation process. The editing instructions will look something like:*
+```
+echo "export PATH=\$PATH:\$HOME/edirect" >> $HOME/.bash_profile   
+```
+The line `#PBS -V` at the top of the scripts called by `qsub` exports environmental variables, including those in `.bash_profile`. 
 
-## INPUT FILE OPTIONS (and download instructions)
+### 1.2 Request an API key from NBCI (optional)
 
-### VERSION 1 (by GenBank accession; preferred method)
+As of May 1, 2018, you must request an API key from NCBI in order to submit multiple EDirect requests within one second. These scripts add a 1-second pause after each EDirect command to try to avoid the `429 Too Many Requests PLEASE REQUEST AN API_KEY FROM NCBI` error. However, I have still gotten this error even with the `sleep` commands to avoid it. If this becomes problematic, follow the instructions here to allow for more requests from your IP address: https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
+
+## 2. Prepare the input file that specifies the target genomes  
+
+Scripts are supplied for two different input types: 1) GenBank accessions; 2) organism names. GenBank accessions are preferred whenever possible. Follow the instructions below to generate input files in one of the accepted formats. 
+
+### 2.1 Version 1: GenBank accessions (preferred)
 
 1. PATRIC .txt file (archaea, bacteria)
     1. Go [here](https://www.patricbrc.org/) [1]
@@ -39,8 +57,8 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
     * GenBank accessions must be one per line or separated by commas (no space)
     * All genomes fetched for accession on the SAME line will be concatenated into one genome file; the script assumes all sequences belong to the organism specified by the first accession in the comma-delimited list
     * Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
-
-### VERSION 2 
+    
+### 2.2 Version 2: Organism name (suboptimal)
 
 1. NCBI .txt file
     1. Go [here](http://www.ncbi.nlm.nih.gov/genome/browse/)
@@ -52,6 +70,41 @@ Genomes may be specified by GenBank accession or organism name. However, GenBank
     * Must have only one column, containing only complete strings of organism names
     * Must have only one organism per line
     * Rename the file with something simple; save it to the desired database location folder in addition to other required package files (see above)
+
+## 3. Prepare the output directory 
+
+1. Create a new folder (e.g. `ncbi`)
+2. From the command line, export a variable called `outdir` that is defined as the **full** path to the output folder, e.g.:
+```
+export outdir=/users/my_username/ncbi
+```
+3. Move the file generated in Step 2 to this folder. No other files should be present in this folder. 
+
+## 4. Run the scripts
+
+### 4.1 Via the cluster (recommended)
+
+1. 
+
+### 4.2 Locally (suboptimal)
+
+
+
+## CONTENTS (required in present working directory for operation)
+
+### PART 1 (download of individual, custom-formatted genome files)
+
+1. `retrieve_V1.sh` OR `retrieve_V2.sh`
+2. `mass_retrieve_V1.qsub` OR `mass_retrieve_V2.qsub`
+3. `splitJobs.py`
+4. Organism spec file, supplied by the user (see options below)
+
+### PART 2 (concatention of sequence files and clean-up of directory)
+
+1. Outputs of PART 1 (FASTA files; all `all_lengths_*.txt` files)
+2. `format.sh`
+
+
 
 ## TO RUN
 
@@ -91,33 +144,10 @@ EXAMPLE:
 1. Files (.fa) of concatenated FASTA files, each <= 2.8 GB (change default max size within `format.sh`)
 2. Concatenated `all_lengths.txt` file
 
-## NCBI EDirect [3]
 
-If this is your first time using this script, you will need to do some setup in regards to direct.
-Essentially, you need to install edirect to your home directory and add an environmental variable to .bashrc.
 
-1. Install `edirect` by following the instructions below, copied from here (taken from [here](http://www.ncbi.nlm.nih.gov/books/NBK179288/)). Note you must already have `perl` installed:
 
-*EDirect will run on UNIX and Macintosh computers that have the Perl language installed, and under the Cygwin UNIX-emulation environment on Windows PCs. To install the EDirect software, copy the following commands and paste them into a terminal window:*
 
-```
-cd ~
-/bin/bash
-perl -MNet::FTP -e \
-	'$ftp = new Net::FTP("ftp.ncbi.nlm.nih.gov", Passive => 1);
-	$ftp->login; $ftp->binary;
-	$ftp->get("/entrez/entrezdirect/edirect.tar.gz");'
-gunzip -c edirect.tar.gz | tar xf -
-rm edirect.tar.gz
-builtin exit
-export PATH=${PATH}:$HOME/edirect >& /dev/null || setenv PATH "${PATH}:$HOME/edirect"
-./edirect/setup.sh
-```
-*This downloads several scripts into an "edirect" folder in the user's home directory. The setup.sh script then downloads any missing Perl modules, and may print an additional command for updating the PATH environment variable in the user's configuration file. Copy that command, if present, and paste it into the terminal window to complete the installation process. The editing instructions will look something like:*
-```
-echo "export PATH=\$PATH:\$HOME/edirect" >> $HOME/.bash_profile   
-```
-Now the scripts should work, as long as the line `#PBS -V` is at the top of all scripts called by `qsub`. This exports environmental variables. 
 
 ## FOR UNIX NOVICES
 
@@ -138,7 +168,7 @@ A quick tutorial on what you need to know about UNIX in order to run this script
 These basic commands provide everything you need to know and more in able to use this database compilation package. 
 Happy compiling!
 
-## SOURCES
+## REFERENCES
 
 [1]	Wattam, A.R., D. Abraham, O. Dalay, T.L. Disz, T. Driscoll, J.L. Gabbard, J.J. Gillespie, R. Gough, D. Hix, R. Kenyon, D. Machi, C. Mao, E.K. Nordberg, R. Olson, R. 	Overbeek, G.D. Pusch, M. Shukla, J. Schulman, R.L. Stevens, D.E. Sullivan, V. Vonstein, A. Warren, R. Will, M.J.C. Wilson, H. Seung Yoo, C. Zhang, Y. Zhang, B.W. Sobral (2014). “PATRIC, the bacterial bioinformatics database and analysis resource.” Nucl Acids Res 42 (D1): D581-D591. doi:10.1093/nar/gkt1099. PMID: 24225323. 
 
