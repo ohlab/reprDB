@@ -80,7 +80,7 @@ Scripts are supplied for two different input types: 1) GenBank accessions; 2) or
 
 ### 4.0 Test run 
 
-* As of 20 March 2019, please skip this step until `test` is updated *
+*As of 20 March 2019, please skip this step until `test` is updated*
 
 Run `test.sh` for a quick unit test. It uses two E.coli genomes and one Cowpox virus genome to check if the outputs of the download, formatting, job split, and compilation steps are working as expected. The result of the test is output to `test_result`. Please make sure to run the test before compiling the full database to avoid overwriting.
 
