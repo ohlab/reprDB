@@ -31,7 +31,7 @@ The line `#PBS -V` at the top of the scripts called by `qsub` exports environmen
 
 ### 1.2 Request an API key from NBCI (HIGHLY RECOMMENDED)
 
-As of May 1, 2018, you must request an API key from NCBI in order to submit multiple EDirect requests within one second. These scripts add a 5-second pause after each EDirect command to try to avoid the `429 Too Many Requests PLEASE REQUEST AN API_KEY FROM NCBI` error. However, I have still gotten this error even with the `sleep` commands to avoid it. I highly recommend obtaining an API key from NCBI before attempting to run these script. Follow the instructions here: https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
+As of May 1, 2018, you must request an API key from NCBI in order to submit multiple EDirect requests within one second. These scripts add a 5-second pause after each EDirect command to try to avoid the `429 Too Many Requests PLEASE REQUEST AN API_KEY FROM NCBI` error. However, I have still gotten this error even with the `sleep` commands to avoid it. I **highly recommend** obtaining an API key from NCBI before attempting to run these script. Follow the instructions here: https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
 
 ## 2. Prepare the input file that specifies the target genomes  
 
@@ -77,6 +77,12 @@ Scripts are supplied for two different input types: 1) GenBank accessions; 2) or
 2. Move the file generated in Step 2 to this folder. No other files should be present in this folder. 
 
 ## 4. Run the scripts
+
+### 4.0 Test run 
+
+* As of 20 March 2019, please skip this step until `test` is updated *
+
+Run `test.sh` for a quick unit test. It uses two E.coli genomes and one Cowpox virus genome to check if the outputs of the download, formatting, job split, and compilation steps are working as expected. The result of the test is output to `test_result`. Please make sure to run the test before compiling the full database to avoid overwriting.
 
 ### 4.1 Via the cluster (recommended)  
 
