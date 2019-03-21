@@ -17,60 +17,40 @@
 # Nicole Gay 
 # SSP 2016
 # 9 Aug 2016
+# Updated 19 March 2019
 
-# Have the user specify the input
-printf "\nThis script is for the download of genomes by organism name. Download by GenBank accession (Version 1) is preferable.\n"
+infile=$1
+outdir=`dirname $infile`
+cd $outdir
 
-# Make the user-defined file name a variable
-printf "\n"
-read -p "Type the name of the file (including extension). Then press ENTER: `echo $'\n> '`" FILE_NAME
-printf "\n"
+echo 
+echo "This script is for the download of genomes by GenBank accession. Please see Version 2 for download by organism name."
+echo
 
-# Check if the user input is a valid file name in the PWD
-head -1 ${FILE_NAME} > heads.txt
-if [ `echo $?` == 0 ]
-then
-	continue
+# Check if the user input is a valid file name
+if [ -f "$infile" ]; then 
+	head -1 ${infile} > heads.txt
+elif [ "$infile" == "" ]; then
+	echo "No input file provided. Please type the name of the input file after your call to this script."
+	exit
 else
-	printf "Terminating program...\n\n"
+	echo "File ${infile} not found."
 	exit
 fi
-
-# Get the number of chunks
-printf "Enter the number of jobs you would like to submit to the cluster (integer < 100) or type 'help' for an explanation: "
-LOOP=true
-while $LOOP
-do
-	read JOB_NUM
-	
-	if [ $JOB_NUM == "help" ]
-	then
-		printf "\nThis number specifies how many chunks into which the requested accessions will be split in order to submit jobs in parallel. A greater number will result in shorter job completion. However, too high of a number will overload the NCBI Entrez server from which files are fetched.\n\n"
-		printf "Enter an integer less than 100: "
-	elif [[ $JOB_NUM = *[A-z]* ]]
-	then
-		printf "\nInvalid entry. Enter an integer less than 100: "
-	elif [ $JOB_NUM -gt 100 ]
-	then
-		printf "\nInvalid entry. Enter an integer less than 100: "
-	else
-		LOOP=false
-	fi
-done
 
 LOOP1=true
 while $LOOP1
 do
 	printf "\nType the number corresponding to the input file type:\n1: NCBI .txt file\n2: List of organism names\n3: Quit\n"
 	read -n 1 INPUT
-	printf "\n"
+	echo
 	if [ $INPUT == 1 ]
 	then
 		LOOP1=false
 		# Retrieve the organism names from the NCBI table
 		ORG_COL=`tr '\t' '\n' < heads.txt | nl | grep Organism/Name | cut -f 1`
 		rm heads.txt
-		cut -f $ORG_COL $FILE_NAME | sed 's/ /_/g' | sed '/#Organism/d' > all_species.txt
+		cut -f $ORG_COL $infile | sed 's/ /_/g' | sed '/#Organism/d' > all_species.txt
 		
 		# Clean up the target species list
 		cut -f 1 all_species.txt | cut -f1,2 -d'_' | sort | uniq > long_species.txt
@@ -80,14 +60,14 @@ do
 		
 		for a in `cat unnamed_species.txt`
 		do
-			grep "$a sp\." $FILE_NAME | cut -f 1 | sed 's/ /_/g' >> simple_species.txt
+			grep "$a sp\." $infile | cut -f 1 | sed 's/ /_/g' >> simple_species.txt
 		done
 		
 	elif [ $INPUT == 2 ]
 	then
 		LOOP1=false
 		# skip to looping through organism name
-		cat $FILE_NAME > all_species.txt
+		cat $infile > all_species.txt
 		
 		# Clean up the target species list
 		cut -f 1 all_species.txt | cut -f1,2 -d'_' | sort | uniq > long_species.txt
@@ -97,7 +77,7 @@ do
 		
 		for a in `cat unnamed_species.txt`
 		do
-			grep "$a sp\." $FILE_NAME| cut -f 1 | sed 's/ /_/g' >> simple_species.txt
+			grep "$a sp\." $infile | cut -f 1 | sed 's/ /_/g' >> simple_species.txt
 		done
 		
 	elif [ $INPUT == 3 ]
@@ -112,8 +92,8 @@ done
 ASKED=`wc -l < all_species.txt | sed 's/^ *//' | sed 's/ .*//'`
 FETCHED=`wc -l < simple_species.txt | sed 's/^ *//' | sed 's/ .*//'`
 
-printf "\nNumber of species requested:\t$ASKED"
-printf "\nNumber of species processed:\t$FETCHED\n"
+echo "Number of species requested:	$ASKED"
+echo "Number of species processed:	$FETCHED"
 
 # Set up the folders and output files
 mkdir _interim
@@ -123,6 +103,8 @@ LINES=`wc -l < simple_species.txt | sed 's/^ *//' | sed 's/ .*//'`
 END=`python splitJobs.py simple_species.txt $LINES $JOB_NUM` #generate JOB_NUM of chunks of GenBank accessions, each in a different file
 sleep 3
 printf "Number of jobs generated: $END\n\n"
+
+export ${outdir}
 
 # Job array: for each chunk of accessions, download and edit the .fasta file and output all_lengths.txt
 ########################## mass_retrieve.qsub

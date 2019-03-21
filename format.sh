@@ -1,6 +1,3 @@
-#PBS -N format_db
-#PBS -l walltime=60:00:00,mem=8gb,nodes=1:ppn=16
-
 #   ReprDB compilation pipeline
 #   Copyright (C) 2017 Nicole Gay
 
@@ -17,36 +14,21 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-printf "\nThis script concatenates all FASTA files in _interim (a sub-folder in the pwd) into larger chunks and cleans up other outputs of retrieve.sh. Individual FASTA files are compressed once concatenated. You may delete them upon completion of this script.\n\n"
+# Nicole Gay 
+# SSP 2016
+# 9 Aug 2016
+# Updated 19 March 2019
 
-printf "Would you like to continue? (Y/N): "
-LOOP=true
-while $LOOP
-do
-	read -n 1 ANS
-	printf "\n\n"
-	if [ $ANS == "y" ] || [ $ANS == "Y" ]
-	then
-		LOOP=false
-	elif [ $ANS == "n" ] || [ $ANS == "N" ]
-	then
-		printf "\n\nTerminating program...\n\n"
-		exit
-	else
-		printf "\n\nInvalid entry. Type Y or N: "
-	fi
-done 
+infile=$1
+outdir=`dirname $infile`
+cd $outdir
 
 # Make a destination folder
-VAL=`ls | grep -c _bowtie_req` # make the _bowtie_req folder if it doesn't already exist
-if [ $VAL != "1" ]
-then
-	mkdir _bowtie_req
-fi
+mkdir -p compiled_genomes
 
 cd _interim
 INC=1
-printf "" > microbe_$INC.fa
+touch microbe_$INC.fa
 
 # Concatenate FASTA files into <= 2.8 GB chunks
 for each in `ls *.fasta`
@@ -67,28 +49,19 @@ do
 	#rm $each
 	gzip $each
 done
-mv microbe_* ../_bowtie_req
+mv microbe_* ../compiled_genomes
 
 cd .. 
 # Concatenate the all_lengths.txt files
 cat all_lengths_* | sort | uniq > all_lengths.txt
 rm all_lengths_*
-mv all_lengths.txt _bowtie_req
+mv all_lengths.txt compiled_genomes
 
 # Concatenate the error logs
 cat failed_downloads_* > failed_downloads.txt
 rm failed_downloads_*
 
 # Clean up the rest
-rm -f mass_retrieve_V1_* mass_retrieve_V2_*
+rm mass_retrieve_V1_* mass_retrieve_V2_*
 
-VAL=`ls | grep -c _package` # make a _package folder if it doesn't already exist
-if [ $VAL != "1" ]
-then
-	mkdir _package
-fi
-
-printf "Ignore any following errors regarding \"mv\"..."
-mv -t _package splitJobs.py mass_retrieve_V{1..2}.qsub retrieve_V{1..2}.sh failed_downloads.txt
-
-printf "\nDone! Look in _bowtie_req for the concatenated .fa files and all_lengths.txt!\n\n"
+printf "\nDone! Look in compiled_genomes for the concatenated .fa files and all_lengths.txt!\n\n"

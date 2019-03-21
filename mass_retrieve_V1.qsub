@@ -20,6 +20,8 @@
 
 # Throughout this script, there are while loops with an $ITER max iteration condition of 5. This is to make 5 attempts of downloading a file before giving up because I frequently see Entrez errorring out even when it's very possible to fetch a file for that accession
 
+cd ${outdir}
+
 # Try not to overload the Entrez server
 a=1
 while [ "$a" -lt "${PBS_ARRAYID}" ]
@@ -28,8 +30,8 @@ do
 	a=$(( a + 1 ))
 done
  
-printf "" > all_lengths_${PBS_ARRAYID}.txt
-printf "" > failed_downloads_${PBS_ARRAYID}.txt
+touch all_lengths_${PBS_ARRAYID}.txt
+touch failed_downloads_${PBS_ARRAYID}.txt
  
 for n in `cat GenBankAcc_${PBS_ARRAYID}`
 do
@@ -39,21 +41,22 @@ do
 	COUNT=null
 	CHECK=null
 	GENOME_LENGTH=null
-	
-	# CURRENTLY IN MAIN DIRECTORY
-	COMMA=`echo $n | grep -c ,`
-	if [ $COMMA == 0 ] #if there is only one accession...
-	then
+
+	if [[ $n != *,* ]]; then #if there is only one accession...
+
+		echo $n
 	
 		#1: Retrieve FASTA file
 		########################## 
 		esearch -db nuccore -query "$n[ACCN]" | efetch -format fasta > $n.fasta
+		sleep 5
 		COUNT=`wc -c < $n.fasta | sed 's/^ *//' | sed 's/ .*//'`
 		
 		ITER=1
 		while [ "$COUNT" -lt 2 ] || [ "$ITER" -lt 5 ]
 		do
 			esearch -db nuccore -query "$n[ACCN]" | efetch -format fasta > $n.fasta
+			sleep 5
 			COUNT=`wc -c < $n.fasta | sed 's/^ *//' | sed 's/ .*//'`
 			ITER=$((ITER + 1))
 		done
@@ -79,6 +82,7 @@ do
 		########################## 
 		# Construct the taxonomy string for each species and add it to the table
 		esearch -db nuccore -query "$n[ACCN]" | efetch -format gp | head -50 > ${PBS_ARRAYID}.info
+		sleep 5
 		
 		COUNT=`wc -c < ${PBS_ARRAYID}.info | sed 's/^ *//' | sed 's/ .*//'`
 		
@@ -86,6 +90,7 @@ do
 		while [ "$COUNT" -lt 2 ] || [ "$ITER" -lt 5 ]
 		do
 			esearch -db nuccore -query "$n[ACCN]" | efetch -format gp | head -50 > ${PBS_ARRAYID}.info
+			sleep 5
 			COUNT=`wc -c < ${PBS_ARRAYID}.info | sed 's/^ *//' | sed 's/ .*//'`
 			ITER=$((ITER + 1))
 		done
@@ -160,13 +165,17 @@ do
 		########################## 
 		for x in `cat ACC_${PBS_ARRAYID}.txt` # iterate through the list
 		do
+			echo $x
+			
 			esearch -db nuccore -query "$x[ACCN]" | efetch -format fasta > $x.fasta
+			sleep 5
 			COUNT=`wc -c < $x.fasta | sed 's/^ *//' | sed 's/ .*//'`
 		
 			ITER=1
 			while [ "$COUNT" -lt 2 ] || [ "$ITER" -lt 5 ]
 			do
 				esearch -db nuccore -query "$x[ACCN]" | efetch -format fasta > $x.fasta
+				sleep 5
 				COUNT=`wc -c < $x.fasta | sed 's/^ *//' | sed 's/ .*//'`
 				ITER=$((ITER + 1))
 			done
@@ -212,12 +221,14 @@ do
 		########################## 
 		# Construct the taxonomy string for each species and add it to the table
 		esearch -db nuccore -query "$h[ACCN]" | efetch -format gb | head -50 > ${PBS_ARRAYID}.info
+		sleep 5
 		COUNT=`wc -c < ${PBS_ARRAYID}.info | sed 's/^ *//' | sed 's/ .*//'`
 		
 		ITER=1
 		while [ "$COUNT" -lt 2 ] || [ "$ITER" -lt 5 ]
 		do
 			esearch -db nuccore -query "$h[ACCN]" | efetch -format gb | head -50 > ${PBS_ARRAYID}.info
+			sleep 5
 			COUNT=`wc -c < ${PBS_ARRAYID}.info | sed 's/^ *//' | sed 's/ .*//'`
 			ITER=$((ITER + 1))
 		done

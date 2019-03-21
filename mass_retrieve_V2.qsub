@@ -17,8 +17,12 @@
 
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# Try not to overload the Entrez server
 
+# Throughout this script, there are while loops with an $ITER max iteration condition of 5. This is to make 5 attempts of downloading a file before giving up because I frequently see Entrez errorring out even when it's very possible to fetch a file for that accession
+
+cd ${outdir}
+
+# Try not to overload the Entrez server
 a=1
 while [ "$a" -lt "${PBS_ARRAYID}" ]
 do
@@ -26,11 +30,12 @@ do
 	a=$(( a + 1 ))
 done
  
-printf "" > all_lengths_${PBS_ARRAYID}.txt
-printf "" > failed_downloads_${PBS_ARRAYID}.txt
+touch all_lengths_${PBS_ARRAYID}.txt
+touch failed_downloads_${PBS_ARRAYID}.txt
  
 for g in `cat GenBankAcc_${PBS_ARRAYID}` # called GenBankAcc by python script, but really organism names
 do
+
 	# Reset variables
 	ERROR=0
 	NEW_HEAD=null
@@ -41,6 +46,7 @@ do
 
 	NAME=`echo $g | sed 's/_/ /g'`
 	esearch -db nuccore -query "$NAME[ORGN]" | efetch -format fasta > $g.fasta
+	sleep 5
 	COUNT=`wc -w < $g.fasta | sed 's/^ *//' | sed 's/ .*//'`
 	if [ "$COUNT" -lt 2 ]
 	then 
@@ -82,6 +88,7 @@ printf "" > headers.txt
 for y in `cat accessions_${PBS_ARRAYID}.txt`
 do	
 	esearch -db nuccore -query "$y[ACCN]" | efetch -format gp | head -50 > ${PBS_ARRAYID}.info
+	sleep 5
 	COUNT=`wc -c < ${PBS_ARRAYID}.info | sed 's/^ *//' | sed 's/ .*//'`
 	if [ "$COUNT" -lt 2 ]
 	then 

@@ -18,79 +18,54 @@
 # SSP 2016
 # 9 Aug 2016
 
-# Have the user specify the input
-printf "\nThis script is for the download of genomes by GenBank accession.\nPlease see Version 2 for download by organism name.\n"
+infile=$1
+outdir=`dirname $infile`
+cd $outdir
 
-# Make the user-defined file name a variable
-printf "\n"
-read -p "Type the name of the file (including extension). Then press ENTER: `echo $'\n> '`" FILE_NAME
-printf "\n"
+echo 
+echo "This script is for the download of genomes by GenBank accession. Please see Version 2 for download by organism name."
+echo
 
-# Check if the user input is a valid file name in the PWD
-head -1 ${FILE_NAME} > heads.txt
-if [ `echo $?` == 0 ]
-then
-	continue
+# Check if the user input is a valid file name
+if [ -f "$infile" ]; then 
+	head -1 ${infile} > heads.txt
+elif [ "$infile" == "" ]; then
+	echo "No input file provided. Please type the name of the input file after your call to this script."
+	exit
 else
-	printf "Terminating program...\n\n"
+	echo "File ${infile} not found."
 	exit
 fi
-
-# Get the number of chunks
-printf "Enter the number of jobs you would like to submit to the cluster (integer < 100) or type 'help' for an explanation: "
-LOOP=true
-while $LOOP
-do
-	read JOB_NUM
-	
-	if [ $JOB_NUM == "help" ]
-	then
-		printf "\nThis number specifies how many chunks into which the requested accessions will be split in order to submit jobs in parallel. A greater number will result in shorter job completion. However, too high of a number will overload the NCBI Entrez server from which files are fetched.\n\n"
-		printf "Enter an integer less than 100: "
-	elif [[ $JOB_NUM = *[A-z]* ]]
-	then
-		printf "\nInvalid entry. Enter an integer less than 100: "
-	elif [ $JOB_NUM -gt 100 ]
-	then
-		printf "\nInvalid entry. Enter an integer less than 100: "
-	else
-		LOOP=false
-	fi
-done
 
 LOOP1=true
 while $LOOP1
 do
-	printf "\nType the number corresponding to the input file type:\n1: PATRIC .txt file\n2: NCBI .nbr file\n3: List of GenBank accessions\n4: Quit\n"
+	printf "Type the number corresponding to the input file type:\n1: PATRIC .txt file\n2: NCBI .nbr file\n3: List of GenBank accessions\n4: Quit\n"
 	read -n 1 INPUT
-	printf "\n"
-	if [ $INPUT == 1 ]
-	then
+	echo
+	if [ $INPUT == 1 ]; then
 		LOOP1=false
 		# Retrieve the GenBank accessions from the PATRIC table
 		colnum=`tr '\t' '\n' < heads.txt | nl | grep 'GenBank Accessions$' | cut -f 1`
-		cut -f ${colnum} ${FILE_NAME} | sed -e '/^$/d' -e '1d' > GenBankAcc.txt
-	elif [ $INPUT == 2 ]
-	then
+		cut -f ${colnum} ${infile} | sed -e '/^$/d' -e '1d' > GenBankAcc.txt
+	elif [ $INPUT == 2 ]; then
 		LOOP1=false
 		# Retrieve the GenBank accessions from the NCBI table
-		cut -f 1 ${FILE_NAME} | sed -e '1,2d' -e 's/,.*//' | sort -u -k1,1 > NCBI_acc.txt
+		cut -f 1 ${infile} | sed -e '1,2d' -e 's/,.*//' | sort -u -k1,1 > NCBI_acc.txt
 		printf "" > GenBankAcc.txt
 		for NCBI_acc in `cat NCBI_acc.txt`
 		do
-			grep $NCBI_acc $FILE_NAME | cut -f 2 | tr "\n" "," | sed '$ s/.$//' > GenBank.txt
+			grep $NCBI_acc $infile | cut -f 2 | tr "\n" "," | sed '$ s/.$//' > GenBank.txt
 			GEN_ACC=`cat GenBank.txt`
 			printf "$GEN_ACC\n" >> GenBankAcc.txt
 		done
 		rm GenBank.txt
 		rm NCBI_acc.txt
-	elif [ $INPUT == 3 ]
-	then
+	elif [ $INPUT == 3 ]; then
 		LOOP1=false
 		# skip to looping through accessions
-		cat $FILE_NAME > GenBankAcc.txt
-	elif [ $INPUT == 4 ]
-	then
+		cat $infile > GenBankAcc.txt
+	elif [ $INPUT == 4 ]; then
 		printf "\n\nTerminating program...\n\n"
 		exit
 	else
@@ -111,6 +86,8 @@ sleep 3
 printf "Number of jobs generated: $END\n\n"
 rm GenBankAcc.txt
 
+export ${outdir}
+
 # Job array: for each chunk of accessions, download and edit the .fasta file and output all_lengths.txt
 ########################## mass_retrieve.qsub
 JOB1=`qsub mass_retrieve_V1.qsub -t 1-$END -d $PWD`
@@ -121,3 +98,4 @@ then
 fi
 ########################## mass_retrieve.qsub
 #OUTPUT: FASTA files with correct headers; all_lengths.txt
+
