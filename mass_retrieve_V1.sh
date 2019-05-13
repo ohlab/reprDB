@@ -86,7 +86,7 @@ sleep 3
 printf "Number of jobs generated: $END\n\n"
 rm GenBankAcc.txt
 
-export ${outdir}
+# export ${outdir}
 
 # Job array: for each chunk of accessions, download and edit the .fasta file and output all_lengths.txt
 ########################## mass_retrieve.qsub
