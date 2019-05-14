@@ -21,7 +21,6 @@
 
 infile=$1
 outdir=`dirname $infile`
-cd $outdir
 
 echo 
 echo "This script is for the download of genomes by GenBank accession. Please see Version 2 for download by organism name."
@@ -29,7 +28,7 @@ echo
 
 # Check if the user input is a valid file name
 if [ -f "$infile" ]; then 
-	head -1 ${infile} > heads.txt
+	head -1 ${infile} > ${outdir}/heads.txt
 elif [ "$infile" == "" ]; then
 	echo "No input file provided. Please type the name of the input file after your call to this script."
 	exit
@@ -48,36 +47,36 @@ do
 	then
 		LOOP1=false
 		# Retrieve the organism names from the NCBI table
-		ORG_COL=`tr '\t' '\n' < heads.txt | nl | grep Organism/Name | cut -f 1`
-		rm heads.txt
-		cut -f $ORG_COL $infile | sed 's/ /_/g' | sed '/#Organism/d' > all_species.txt
+		ORG_COL=`tr '\t' '\n' < ${outdir}/heads.txt | nl | grep Organism/Name | cut -f 1`
+		rm ${outdir}/heads.txt
+		cut -f $ORG_COL $infile | sed 's/ /_/g' | sed '/#Organism/d' > ${outdir}/all_species.txt
 		
 		# Clean up the target species list
-		cut -f 1 all_species.txt | cut -f1,2 -d'_' | sort | uniq > long_species.txt
-		grep "_sp\." long_species.txt | sed 's/_.*//' > unnamed_species.txt #SAVE FOR LATER
-		sed '/\./d' long_species.txt > simple_species.txt
-		rm long_species.txt
+		cut -f 1 ${outdir}/all_species.txt | cut -f1,2 -d'_' | sort | uniq > ${outdir}/long_species.txt
+		grep "_sp\." ${outdir}/long_species.txt | sed 's/_.*//' > ${outdir}/unnamed_species.txt #SAVE FOR LATER
+		sed '/\./d' ${outdir}/long_species.txt > ${outdir}/simple_species.txt
+		rm ${outdir}/long_species.txt
 		
-		for a in `cat unnamed_species.txt`
+		for a in `cat ${outdir}/unnamed_species.txt`
 		do
-			grep "$a sp\." $infile | cut -f 1 | sed 's/ /_/g' >> simple_species.txt
+			grep "$a sp\." $infile | cut -f 1 | sed 's/ /_/g' >> ${outdir}/simple_species.txt
 		done
 		
 	elif [ $INPUT == 2 ]
 	then
 		LOOP1=false
 		# skip to looping through organism name
-		cat $infile > all_species.txt
+		cat $infile > ${outdir}/all_species.txt
 		
 		# Clean up the target species list
-		cut -f 1 all_species.txt | cut -f1,2 -d'_' | sort | uniq > long_species.txt
-		grep "_sp\." long_species.txt | sed 's/_.*//' > unnamed_species.txt #SAVE FOR LATER
-		sed '/\./d' long_species.txt > simple_species.txt
-		rm long_species.txt
+		cut -f 1 ${outdir}/all_species.txt | cut -f1,2 -d'_' | sort | uniq > ${outdir}/long_species.txt
+		grep "_sp\." ${outdir}/long_species.txt | sed 's/_.*//' > ${outdir}/unnamed_species.txt #SAVE FOR LATER
+		sed '/\./d' ${outdir}/long_species.txt > ${outdir}/simple_species.txt
+		rm ${outdir}/long_species.txt
 		
-		for a in `cat unnamed_species.txt`
+		for a in `cat ${outdir}/unnamed_species.txt`
 		do
-			grep "$a sp\." $infile | cut -f 1 | sed 's/ /_/g' >> simple_species.txt
+			grep "$a sp\." $infile | cut -f 1 | sed 's/ /_/g' >> ${outdir}/simple_species.txt
 		done
 		
 	elif [ $INPUT == 3 ]
@@ -89,26 +88,24 @@ do
 	fi
 done
 
-ASKED=`wc -l < all_species.txt | sed 's/^ *//' | sed 's/ .*//'`
-FETCHED=`wc -l < simple_species.txt | sed 's/^ *//' | sed 's/ .*//'`
+ASKED=`wc -l < ${outdir}/all_species.txt | sed 's/^ *//' | sed 's/ .*//'`
+FETCHED=`wc -l < ${outdir}/simple_species.txt | sed 's/^ *//' | sed 's/ .*//'`
 
 echo "Number of species requested:	$ASKED"
 echo "Number of species processed:	$FETCHED"
 
 # Set up the folders and output files
-mkdir _interim
+mkdir ${outdir}/_interim
  
 # Split GenBankAcc.txt into number of specified jobs
-LINES=`wc -l < simple_species.txt | sed 's/^ *//' | sed 's/ .*//'`
-END=`python splitJobs.py simple_species.txt $LINES $JOB_NUM` #generate JOB_NUM of chunks of GenBank accessions, each in a different file
+LINES=`wc -l < ${outdir}/simple_species.txt | sed 's/^ *//' | sed 's/ .*//'`
+END=`python splitJobs.py ${outdir}/simple_species.txt $LINES $JOB_NUM` #generate JOB_NUM of chunks of GenBank accessions, each in a different file
 sleep 3
 printf "Number of jobs generated: $END\n\n"
 
-export ${outdir}
-
 # Job array: for each chunk of accessions, download and edit the .fasta file and output all_lengths.txt
 ########################## mass_retrieve.qsub
-JOB1=`qsub mass_retrieve_V2.qsub -t 1-$END -d $PWD`
+JOB1=`qsub -t 1-$END -d ${outdir} mass_retrieve_V2.qsub`
 if [ `echo $?` == 0 ]
 then
 	echo $JOB1
