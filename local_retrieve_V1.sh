@@ -21,7 +21,6 @@
 
 infile=$1
 outdir=`dirname $infile`
-cd $outdir
 
 echo 
 echo "This script is for the download of genomes by GenBank accession. Please see Version 2 for download by organism name."
@@ -29,7 +28,7 @@ echo
 
 # Check if the user input is a valid file name
 if [ -f "$infile" ]; then 
-	head -1 ${infile} > heads.txt
+	head -1 ${infile} > ${outdir}/heads.txt
 elif [ "$infile" == "" ]; then
 	echo "No input file provided. Please type the name of the input file after your call to this script."
 	exit
@@ -47,25 +46,25 @@ do
 	if [ $INPUT == 1 ]; then
 		LOOP1=false
 		# Retrieve the GenBank accessions from the PATRIC table
-		colnum=`tr '\t' '\n' < heads.txt | nl | grep 'GenBank Accessions$' | cut -f 1`
-		cut -f ${colnum} ${infile} | sed -e '/^$/d' -e '1d' > GenBankAcc.txt
+		colnum=`tr '\t' '\n' < ${outdir}/heads.txt | nl | grep 'GenBank Accessions$' | cut -f 1`
+		cut -f ${colnum} ${infile} | sed -e '/^$/d' -e '1d' > ${outdir}/GenBankAcc.txt
 	elif [ $INPUT == 2 ]; then
 		LOOP1=false
 		# Retrieve the GenBank accessions from the NCBI table
-		cut -f 1 ${infile} | sed -e '1,2d' -e 's/,.*//' | sort -u -k1,1 > NCBI_acc.txt
-		printf "" > GenBankAcc.txt
-		for NCBI_acc in `cat NCBI_acc.txt`
+		cut -f 1 ${infile} | sed -e '1,2d' -e 's/,.*//' | sort -u -k1,1 > ${outdir}/NCBI_acc.txt
+		printf "" > ${outdir}/GenBankAcc.txt
+		for NCBI_acc in `cat ${outdir}/NCBI_acc.txt`
 		do
-			grep $NCBI_acc $infile | cut -f 2 | tr "\n" "," | sed '$ s/.$//' > GenBank.txt
-			GEN_ACC=`cat GenBank.txt`
-			printf "$GEN_ACC\n" >> GenBankAcc.txt
+			grep $NCBI_acc $infile | cut -f 2 | tr "\n" "," | sed '$ s/.$//' > ${outdir}/GenBank.txt
+			GEN_ACC=`cat ${outdir}/GenBank.txt`
+			printf "$GEN_ACC\n" >> ${outdir}/GenBankAcc.txt
 		done
-		rm GenBank.txt
-		rm NCBI_acc.txt
+		rm ${outdir}/GenBank.txt
+		rm ${outdir}/NCBI_acc.txt
 	elif [ $INPUT == 3 ]; then
 		LOOP1=false
 		# skip to looping through accessions
-		cat $infile > GenBankAcc.txt
+		cat $infile > ${outdir}/GenBankAcc.txt
 	elif [ $INPUT == 4 ]; then
 		printf "\n\nTerminating program...\n\n"
 		exit
@@ -73,19 +72,21 @@ do
 		printf "\n\nInvalid entry. Type a number 1-4.\n"
 	fi
 done
-rm -f heads.txt
+rm -f ${outdir}/heads.txt
 
 echo
 echo "Downloading genomes... This may take a while."
 
 # Set up the folders and output files
-mkdir _interim
+mkdir ${outdir}/_interim
 
 # Throughout this script, there are while loops with an $ITER max iteration condition of 5. 
 # This is to make 5 attempts of downloading a file before giving up because I frequently see Entrez errorring out even when it's very possible to fetch a file for that accession
  
-touch all_lengths.txt
-touch failed_downloads.txt
+touch ${outdir}/all_lengths.txt
+touch ${outdir}/failed_downloads.txt
+
+cd ${outdir}
 
 for n in `cat GenBankAcc.txt`; do # iterate through lines of GenBankAcc.txt
 
