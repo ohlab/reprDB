@@ -25,13 +25,23 @@ export PATH=${PATH}:$HOME/edirect >& /dev/null || setenv PATH "${PATH}:$HOME/edi
 ```
 *This downloads several scripts into an "edirect" folder in the user's home directory. The setup.sh script then downloads any missing Perl modules, and may print an additional command for updating the PATH environment variable in the user's configuration file. Copy that command, if present, and paste it into the terminal window to complete the installation process. The editing instructions will look something like:*
 ```
-echo "export PATH=\$PATH:\$HOME/edirect" >> $HOME/.bash_profile   
+echo "export PATH=\$PATH:\$HOME/edirect" >> $HOME/.bashrc   
 ```
 The line `#PBS -V` at the top of the scripts called by `qsub` exports environmental variables, including those in `.bash_profile`. 
 
 ### 1.2 Request an API key from NBCI (HIGHLY RECOMMENDED)
 
 As of May 1, 2018, you must request an API key from NCBI in order to submit multiple EDirect requests within one second. These scripts add a 5-second pause after each EDirect command to try to avoid the `429 Too Many Requests PLEASE REQUEST AN API_KEY FROM NCBI` error. However, I have still gotten this error even with the `sleep` commands to avoid it. I **highly recommend** obtaining an API key from NCBI before attempting to run these script. Follow the instructions here: https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
+
+Briefly:
+1. Create an NCBI account: https://www.ncbi.nlm.nih.gov/
+2. Go to your settings: https://www.ncbi.nlm.nih.gov/account/settings/
+3. Click the link to create a new API key
+4. Replace "YOUR_API_KEY" with your API key in the line below and run the command to add it to your `.bashrc`.
+```
+echo "export NCBI_API_KEY=YOUR_API_KEY" >> $HOME/.bashrc
+```
+5. Run `source ~/.bashrc` to export the variable (just this once)
 
 ## 2. Prepare the input file that specifies the target genomes  
 
