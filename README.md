@@ -1,5 +1,9 @@
 # reprDB
 
+**IMPORTANT: This repository serves archival purposes only. See https://github.com/nicolerg/format_refseq for a more streamlined approach to compile a database of RefSeq genomes.**
+
+-------------------------
+
 This package is intended for the download and compilation of whole-genome microbial databases via a cluster. Genomes of interest may be specified by GenBank accession or organism name. However, GenBank accession is preferred whenever possible. Note that scripts are provided to run this process locally, but this is NOT recommended for any large number of genomes.
 
 ## 1. Get EDirect set up
